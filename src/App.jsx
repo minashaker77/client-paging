@@ -1,22 +1,15 @@
-import { useEffect, useState } from "react";
-import usePaginatedFetch from "./usePaginatedFetch";
+import {  useState } from "react";
+import useFetch from "./useFetch";
 import Card from "./components/card";
 import Pagination from "./components/pagination";
 const url =
-	"https://react-mini-projects-api.classbon.com/Programmer/programmers";
+	"https://react-mini-projects-api.classbon.com/Programmer/sieve";
 
 function App() {
-	const [loading, data] = usePaginatedFetch(url, 3);
+	const pageSize = 6;
 	//for show active page:
 	const [page, setPage] = useState(1);
-	//for showing each page data:
-	const [programmers, setProgrammers] = useState([]);
-
-	useEffect(() => {
-		if (loading) return;
-		setProgrammers(data[page - 1]);
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [loading, page]);
+	const [loading, programmers] = useFetch(url, { page, pageSize });
 
 	return (
 		<div className="container pt-5">
@@ -28,16 +21,20 @@ function App() {
 			{!loading && (
 				<>
 					<div className="row d-flex justify-content-center">
-						{programmers.map(({ id, ...programmers }) => {
+						{programmers.data.map(({ id, ...programmers }) => {
 							return (
-								<div className="col-3" key={id}>
+								<div className="col-4" key={id}>
 									<Card {...programmers} />
 								</div>
 							);
 						})}
 					</div>
 					<div className="row">
-						<Pagination pages={data.length} setPage={setPage} activePage={page}/>
+						<Pagination
+							pages={Math.ceil(programmers.totalRecords / pageSize)}
+							setPage={setPage}
+							activePage={page}
+						/>
 					</div>
 				</>
 			)}
