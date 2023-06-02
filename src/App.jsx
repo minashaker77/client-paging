@@ -15,6 +15,7 @@ function App() {
 	useEffect(() => {
 		if (loading) return;
 		setProgrammers(data[page - 1]);
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [loading, page]);
 
 	return (
